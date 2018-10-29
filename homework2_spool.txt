@@ -1,0 +1,33 @@
+MySQL [cs41518_yzhou113_db]> SELECT dorm_name 
+    -> FROM Dorm 
+    -> WHERE gender = 'M';
++----------------+
+| dorm_name      |
++----------------+
+| Bud Jones Hall |
++----------------+
+1 row in set (0.02 sec)
+
+MySQL [cs41518_yzhou113_db]> SELECT Fname, LName, Dname
+    -> FROM Student AS a, Department as e
+    -> WHERE a.Major = e.DNO AND a.StuID NOT IN
+    -> (SELECT b.StuID
+    -> FROM Student AS b, Enrolled_in AS c, Course AS d
+    -> WHERE b.StuID = c.StuID AND c.CID = d.CID AND d.DNO = b.Major);
++---------+----------+-----------------------+
+| Fname   | LName    | Dname                 |
++---------+----------+-----------------------+
+| Eric    | Tai      | Computer Science      |
+| Ian     | Thornton | ECE                   |
+| George  | Andreou  | ECE                   |
+| Michael | Woods    | Chemical Engineering  |
+| David   | Shieber  | ECE                   |
+| Stacy   | Prater   | Chemical Engineering  |
+| Paul    | Brody    | ECE                   |
+| Jun     | Han      | History               |
+| Sarah   | Smith    | Mathematical Sciences |
+| William | Simms    | Mathematical Sciences |
++---------+----------+-----------------------+
+10 rows in set (0.06 sec)
+
+MySQL [cs41518_yzhou113_db]> notee
