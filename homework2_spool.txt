@@ -26,7 +26,7 @@ MySQL [cs41518_yzhou113_db]> SELECT Fname, LName, Dname
 | George  | Andreou | ECE              |
 | Eric    | Pang    | ECE              |
 +---------+---------+------------------+
-4 rows in set (0.09 sec)
+4 rows in set (0.00 sec)
 
 MySQL [cs41518_yzhou113_db]> 
 MySQL [cs41518_yzhou113_db]> # Query Number 3
@@ -59,7 +59,7 @@ MySQL [cs41518_yzhou113_db]> SELECT Fname, LName, Age, Sex
 | William | Simms    |   18 | M    |
 | Eric    | Epp      |   18 | M    |
 +---------+----------+------+------+
-20 rows in set (0.03 sec)
+20 rows in set (0.01 sec)
 
 MySQL [cs41518_yzhou113_db]> 
 MySQL [cs41518_yzhou113_db]> # Query Number 4
@@ -83,7 +83,7 @@ MySQL [cs41518_yzhou113_db]> SELECT Fname, LName, Dname
 | Sarah   | Smith    | Mathematical Sciences |
 | William | Simms    | Mathematical Sciences |
 +---------+----------+-----------------------+
-10 rows in set (0.02 sec)
+10 rows in set (0.01 sec)
 
 MySQL [cs41518_yzhou113_db]> 
 MySQL [cs41518_yzhou113_db]> # Query Number 5 & Assuming each faculty can only participate in the same activity once 
@@ -149,7 +149,7 @@ MySQL [cs41518_yzhou113_db]> SELECT Fname, LName, Dname
 | Charles | Norris | Computer Science     |
 | Stacy   | Prater | Chemical Engineering |
 +---------+--------+----------------------+
-4 rows in set (0.01 sec)
+4 rows in set (0.02 sec)
 
 MySQL [cs41518_yzhou113_db]> 
 MySQL [cs41518_yzhou113_db]> # Query Number 8
@@ -176,7 +176,7 @@ MySQL [cs41518_yzhou113_db]> SELECT Fname, LName, Dname
 | Lisa    | Cheng   | Mathematical Sciences |
 | Eric    | Epp     | Cognitive Science     |
 +---------+---------+-----------------------+
-6 rows in set (0.02 sec)
+6 rows in set (0.01 sec)
 
 MySQL [cs41518_yzhou113_db]> 
 MySQL [cs41518_yzhou113_db]> # Query Number 9
@@ -226,7 +226,7 @@ MySQL [cs41518_yzhou113_db]> SELECT Fname, Lname, b.DName, a.Building AS office,
 | Colin     | Wu          | Mathematical Sciences | Krieger | Maryland   |
 | Leslie    | Hall        | Mathematical Sciences | Krieger | Maryland   |
 +-----------+-------------+-----------------------+---------+------------+
-18 rows in set (0.01 sec)
+18 rows in set (0.00 sec)
 
 MySQL [cs41518_yzhou113_db]> 
 MySQL [cs41518_yzhou113_db]> # Query Number 11
@@ -306,12 +306,19 @@ Empty set (0.01 sec)
 
 MySQL [cs41518_yzhou113_db]> 
 MySQL [cs41518_yzhou113_db]> # Query Number 16
-MySQL [cs41518_yzhou113_db]> SELECT AVG(Age)
+MySQL [cs41518_yzhou113_db]> SELECT AVG(Age) AS Average_Age
     -> FROM Student AS r1 LEFT JOIN Participates_in AS r2 ON r1.StuID = r2.stuid
-    -> WHERE r2.actid IS NULL
-    -> 
-    -> # Query Number 17
-    -> SELECT x.Fname AS student_fname, x.LName AS student_lname, y.DName AS major, z.Fname AS advisor_fname, z.Lname AS advisor_lname 
+    -> WHERE r2.actid IS NULL;
++-------------+
+| Average_Age |
++-------------+
+|     19.2500 |
++-------------+
+1 row in set (0.01 sec)
+
+MySQL [cs41518_yzhou113_db]> 
+MySQL [cs41518_yzhou113_db]> # Query Number 17
+MySQL [cs41518_yzhou113_db]> SELECT x.Fname AS stu_fname, x.LName AS stu_lname, y.DName AS major, z.Fname AS advi_fname, z.Lname AS advi_lname 
     -> FROM Student AS x, Department AS y, Faculty AS z
     -> WHERE x.Major = y.DNO AND x.Advisor = z.FacID AND x.StuID IN
     -> (SELECT DISTINCT e.StuID
@@ -319,7 +326,15 @@ MySQL [cs41518_yzhou113_db]> SELECT AVG(Age)
     -> WHERE f.city_name = 'Baltimore' AND f.state = 'MD' AND f.city_code = g.city1_code AND e.city_code = g.city2_code AND g.distance = (SELECT MAX(c.distance)
     -> FROM Student AS a, City AS b, Direct_distance AS c
     -> WHERE b.city_name = 'Baltimore' AND b.state = 'MD' AND b.city_code = c.city1_code AND a.city_code = c.city2_code));
-ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'SELECT x.Fname AS student_fname, x.LName AS student_lname, y.DName AS major, z.F' at line 6
++-----------+-----------+------------------+------------+------------+
+| stu_fname | stu_lname | major            | advi_fname | advi_lname |
++-----------+-----------+------------------+------------+------------+
+| Tracy     | Kim       | Computer Science | Baruch     | Awerbuch   |
+| Susan     | Lee       | Computer Science | Lawrence   | Wolff      |
+| Eric      | Pang      | ECE              | John       | Goutsias   |
++-----------+-----------+------------------+------------+------------+
+3 rows in set (0.00 sec)
+
 MySQL [cs41518_yzhou113_db]> 
 MySQL [cs41518_yzhou113_db]> # Query Number 18
 MySQL [cs41518_yzhou113_db]> SELECT x.Fname AS student_fname, x.LName AS student_lname, y.DName AS major, z.Fname AS advisor_fname, z.Lname AS advisor_lname 
@@ -339,7 +354,7 @@ MySQL [cs41518_yzhou113_db]> SELECT x.Fname AS student_fname, x.LName AS student
 +---------------+---------------+------------------+---------------+---------------+
 | Bruce         | Wilson        | Computer Science | Gerald        | Masson        |
 +---------------+---------------+------------------+---------------+---------------+
-1 row in set (0.01 sec)
+1 row in set (0.00 sec)
 
 MySQL [cs41518_yzhou113_db]> 
 MySQL [cs41518_yzhou113_db]> # Query Number 22
@@ -352,15 +367,75 @@ MySQL [cs41518_yzhou113_db]> SELECT a.activity_name
     -> AND a.actid NOT IN
     -> (SELECT DISTINCT d.actid
     -> FROM Participates_in AS d, Student AS e
-    -> WHERE d.stuid = e.StuID AND e.Sex = 'F')
-    -> 
-    -> # Query Number 23
-    -> SELECT r1.CName, r1.CID
+    -> WHERE d.stuid = e.StuID AND e.Sex = 'F');
++-----------------+
+| activity_name   |
++-----------------+
+| Volleyball      |
+| Extreme Canasta |
+| Proselytizing   |
++-----------------+
+3 rows in set (0.01 sec)
+
+MySQL [cs41518_yzhou113_db]> 
+MySQL [cs41518_yzhou113_db]> # Query Number 23
+MySQL [cs41518_yzhou113_db]> SELECT r1.CName, r1.CID
     -> FROM Course AS r1 LEFT JOIN Enrolled_in AS r2 ON r1.CID = r2.CID
     -> GROUP BY r1.CID
     -> HAVING COUNT(r2.StuID) < 3;
-ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'SELECT r1.CName, r1.CID
-FROM Course AS r1 LEFT JOIN Enrolled_in AS r2 ON r1.CID ' at line 13
++-----------------------------------------+---------+
+| CName                                   | CID     |
++-----------------------------------------+---------+
+| LANGUAGE AND MIND                       | 050.102 |
+| FORMAL METHODS IN COGNITIVE SCIENCE     | 050.370 |
+| LANGUAGE DEVELOPMENT                    | 050.381 |
+| THE HISTORY OF ROMANCE LANGUAGES        | 050.427 |
+| FORMAL METHODS IN COGNITIVE SCIENCE     | 050.670 |
+| RESEARCH SEMINAR IN COGNITIVE PROCESSES | 050.802 |
+| COMP. MODELS OF SENTENCE PROCESSING     | 050.821 |
+| ACCOUNTING I                            | 500.203 |
+| ACCOUNTING II                           | 500.204 |
+| BUSINESS LAW I                          | 500.205 |
+| BUSINESS LAW II                         | 500.206 |
+| INTRODUCTION TO ECE                     | 520.137 |
+| FIELDS, MATTER AND WAVES                | 520.219 |
+| INTEGRATED ELECTRONICS                  | 520.325 |
+| BASIC COMMUNICATIONS                    | 520.401 |
+| FIBER OPTICS AND PHOTONICS              | 520.410 |
+| ITERATIVE ALGORITHMS                    | 520.419 |
+| INTRODUCTION TO NON-LINEAR SYSTEMS      | 520.421 |
+| TOPICS IN MEDICAL IMAGING SYSTEMS       | 520.432 |
+| DIGITAL SIGNAL PROCESSING               | 520.435 |
+| PROCESSING AND RECOGNITION OF SPEECH    | 520.475 |
+| ANALOG AND DIGITAL VLSI SYSTEMS         | 520.490 |
+| ELECTROMAGNETIC WAVES                   | 520.603 |
+| SOLID STATE PHYSICS                     | 520.605 |
+| NONLINEAR TECHNICAL IMAGE PROCESSING    | 520.609 |
+| RANDOM SIGNAL ANALYSIS                  | 520.651 |
+| STATISTICAL ANALYSIS                    | 550.111 |
+| DISCRETE MATHEMATICS                    | 550.171 |
+| INTRODUCTION TO OPTIMIZATION            | 550.361 |
+| STOCHASTIC PROCESSES II                 | 550.626 |
+| STATISTICAL INFERENCE                   | 550.631 |
+| FOUNDATIONS OF OPTIMIZATION             | 550.661 |
+| PERCOLATION THEORY                      | 550.721 |
+| TOPICS IN OPERATIONS RESEARCH           | 550.750 |
+| TOPICS IN APPLIED MATH                  | 550.790 |
+| COMPUTER LITERACY                       | 600.101 |
+| INTRODUCTION TO COMPUTER SCIENCE        | 600.103 |
+| INTRO TO PROGRAMMING IN C/C++           | 600.109 |
+| JAVA PROGRAMMING                        | 600.121 |
+| UNIX SYSTEMS PROGRAMMING                | 600.211 |
+| COMPUTATIONAL MODELS                    | 600.271 |
+| INTRODUCTION TO ALGORITHMS              | 600.363 |
+| COMPUTER SYSTEMS                        | 600.433 |
+| COMPUTER SCIENCE INTERNSHIP             | 600.509 |
+| COMPUTER SCIENCE SEMINAR                | 600.601 |
+| HIGH PERFORMANCE GRAPHICS AND MODELING  | 600.657 |
+| SEMINAR ON COMPUTATIONAL GEOMETRY       | 600.787 |
++-----------------------------------------+---------+
+47 rows in set (0.00 sec)
+
 MySQL [cs41518_yzhou113_db]> 
 MySQL [cs41518_yzhou113_db]> # Query Number 24
 MySQL [cs41518_yzhou113_db]> SELECT Fname, LName FROM Student WHERE StuID IN
@@ -383,7 +458,7 @@ MySQL [cs41518_yzhou113_db]> SELECT Fname, LName FROM Student WHERE StuID IN
 | Paul   | Brody   |
 | Lisa   | Cheng   |
 +--------+---------+
-10 rows in set (0.01 sec)
+10 rows in set (0.00 sec)
 
 MySQL [cs41518_yzhou113_db]> 
 MySQL [cs41518_yzhou113_db]> # Query Number 25
@@ -472,7 +547,7 @@ MySQL [cs41518_yzhou113_db]> SELECT e.Fname, e.LName FROM Student AS e WHERE e.S
 | Jun     | Han      |
 | Sarah   | Smith    |
 +---------+----------+
-8 rows in set (0.00 sec)
+8 rows in set (0.01 sec)
 
 MySQL [cs41518_yzhou113_db]> 
 MySQL [cs41518_yzhou113_db]> # Query Number 28
@@ -484,7 +559,7 @@ MySQL [cs41518_yzhou113_db]> SELECT c.Fname, c.LName FROM Student AS c WHERE c.S
 | Lisa  | Apap  |
 | Derek | Lee   |
 +-------+-------+
-2 rows in set (0.00 sec)
+2 rows in set (0.01 sec)
 
 MySQL [cs41518_yzhou113_db]> 
 MySQL [cs41518_yzhou113_db]> # Query Number 29
@@ -517,7 +592,7 @@ MySQL [cs41518_yzhou113_db]> SELECT e.Fname AS Fname1, e.LName AS Lname1, r2.s1 
 | Linda  | Smith    |   1001 |   1032 | Eric   | Brown    |
 | Shiela | Jones    |   1003 |   1035 | Sarah  | Schmidt  |
 +--------+----------+--------+--------+--------+----------+
-12 rows in set (0.00 sec)
+12 rows in set (0.01 sec)
 
 MySQL [cs41518_yzhou113_db]> 
 MySQL [cs41518_yzhou113_db]> # Query Number 31
@@ -536,7 +611,7 @@ MySQL [cs41518_yzhou113_db]> SELECT r2.DName, r2.DNO, r2.total, (r2.total - r1.n
 | Mathematical Sciences |  550 |     5 |      1 |            80.0000 |
 | Computer Science      |  600 |    18 |      9 |            50.0000 |
 +-----------------------+------+-------+--------+--------------------+
-6 rows in set (0.00 sec)
+6 rows in set (0.01 sec)
 
 MySQL [cs41518_yzhou113_db]> 
 MySQL [cs41518_yzhou113_db]> # Query Number 32
@@ -608,7 +683,7 @@ MySQL [cs41518_yzhou113_db]> SELECT r1.state, r1.Allergy, r1.AllergyType
 | TX    | Shellfish    | food          |
 | TX    | Tree Pollen  | environmental |
 +-------+--------------+---------------+
-34 rows in set (0.09 sec)
+34 rows in set (0.07 sec)
 
 MySQL [cs41518_yzhou113_db]> 
 MySQL [cs41518_yzhou113_db]> # Query Number 34
@@ -649,7 +724,7 @@ MySQL [cs41518_yzhou113_db]> SELECT r2.FName AS Student_Fname, r2.Lname AS Stude
 | Mark          | Schwartz      |   17 | Computer Science  | David         | Yarowsky      |
 | Sarah         | Schmidt       |   26 | Cognitive Science | Robert        | Frank         |
 +---------------+---------------+------+-------------------+---------------+---------------+
-6 rows in set (0.04 sec)
+6 rows in set (0.05 sec)
 
 MySQL [cs41518_yzhou113_db]> 
 MySQL [cs41518_yzhou113_db]> # Query Number 36
@@ -731,7 +806,7 @@ MySQL [cs41518_yzhou113_db]> SELECT d.DNO, d.DName, r5.student_enrollment FROM D
 |  560 | Civil Engineering        |                  0 |
 |  580 | Biomedical Engineering   |                  0 |
 +------+--------------------------+--------------------+
-22 rows in set (0.00 sec)
+22 rows in set (0.01 sec)
 
 MySQL [cs41518_yzhou113_db]> 
 MySQL [cs41518_yzhou113_db]> # Query Number 40
@@ -749,7 +824,7 @@ MySQL [cs41518_yzhou113_db]> SELECT a.Fname AS Student_Fname, a.LName AS Student
 | Eric          | Epp           | INTRO TO PROGRAMMING IN JAVA         | B+    | Stacey           | Jones            |
 | Eric          | Epp           | DATABASE SYSTEMS                     | B     | David            | Yarowsky         |
 +---------------+---------------+--------------------------------------+-------+------------------+------------------+
-5 rows in set (0.00 sec)
+5 rows in set (0.01 sec)
 
 MySQL [cs41518_yzhou113_db]> 
 MySQL [cs41518_yzhou113_db]> # Query Number 41
@@ -780,7 +855,7 @@ MySQL [cs41518_yzhou113_db]> SELECT c.CID, c.CName AS 'Course Name', c.Credits, 
 | 600.461 | COMPUTER VISION                         |       3 | A        |          4 |
 | 600.465 | INTRO TO NATURAL LANGUAGE PROCESSING    |       3 | C        |          2 |
 +---------+-----------------------------------------+---------+----------+------------+
-7 rows in set (0.05 sec)
+7 rows in set (0.03 sec)
 
 MySQL [cs41518_yzhou113_db]> 
 MySQL [cs41518_yzhou113_db]> # Query Number 49
@@ -792,7 +867,7 @@ MySQL [cs41518_yzhou113_db]> SELECT a.StuID, SUM(c.Credits) AS 'Total Credits (M
 +-------+------------------------------+------------------+
 |  1017 |                            9 | 3.23333334922791 |
 +-------+------------------------------+------------------+
-1 row in set (0.01 sec)
+1 row in set (0.02 sec)
 
 MySQL [cs41518_yzhou113_db]> 
 MySQL [cs41518_yzhou113_db]> # Query Number 50
@@ -842,7 +917,7 @@ MySQL [cs41518_yzhou113_db]> SELECT r2.Fname, r2.LName, SUM(r1.Credits) AS 'Tota
 | Eric    | Epp      |                           10 | 3.1  |
 | Sarah   | Schmidt  |                           13 | 3.2  |
 +---------+----------+------------------------------+------+
-34 rows in set (0.28 sec)
+34 rows in set (0.32 sec)
 
 MySQL [cs41518_yzhou113_db]> 
 MySQL [cs41518_yzhou113_db]> # Query Number 55
@@ -881,7 +956,7 @@ MySQL [cs41518_yzhou113_db]> SELECT a.Fname, a.LName, a.Age
 +-------+----------+------+
 | Ian   | Thornton |   22 |
 +-------+----------+------+
-1 row in set (2.06 sec)
+1 row in set (2.27 sec)
 
 MySQL [cs41518_yzhou113_db]> 
 MySQL [cs41518_yzhou113_db]> # Query Number 59
@@ -916,7 +991,7 @@ MySQL [cs41518_yzhou113_db]> SELECT f.ClubName FROM Student AS d, Member_of_club
 | Hopkins Student Enterprises |
 | Bootup Baltimore            |
 +-----------------------------+
-4 rows in set (0.03 sec)
+4 rows in set (0.00 sec)
 
 MySQL [cs41518_yzhou113_db]> 
 MySQL [cs41518_yzhou113_db]> # Query Number 61
@@ -956,7 +1031,7 @@ MySQL [cs41518_yzhou113_db]> SELECT ResName, Address FROM Restaurant WHERE ResID
 +-----------+--------------------------------------+
 | Honeygrow | 3212 St Paul St, Baltimore, MD 21218 |
 +-----------+--------------------------------------+
-1 row in set (0.00 sec)
+1 row in set (0.01 sec)
 
 MySQL [cs41518_yzhou113_db]> 
 MySQL [cs41518_yzhou113_db]> # Query Number 63
@@ -1039,7 +1114,7 @@ MySQL [cs41518_yzhou113_db]> SELECT a.dorm_name, a.student_capacity FROM Dorm AS
 | Dorm-plex 2000 |              400 |
 | Fawlty Towers  |              355 |
 +----------------+------------------+
-2 rows in set (0.03 sec)
+2 rows in set (0.00 sec)
 
 MySQL [cs41518_yzhou113_db]> 
 MySQL [cs41518_yzhou113_db]> # Query Number 69
@@ -1076,7 +1151,7 @@ MySQL [cs41518_yzhou113_db]> SELECT a.activity_name, AVG(c.AGE) AS 'Average Age'
 | Crossword Puzzles |     19.0000 |
 | Proselytizing     |     22.0000 |
 +-------------------+-------------+
-13 rows in set (0.01 sec)
+13 rows in set (0.00 sec)
 
 MySQL [cs41518_yzhou113_db]> 
 MySQL [cs41518_yzhou113_db]> # Query Number 71
@@ -1108,6 +1183,6 @@ MySQL [cs41518_yzhou113_db]> SELECT a.activity_name, AVG(c.AGE) AS 'Average Age'
 | Crossword Puzzles |     19.0000 | 3.13872872767184 |
 | Proselytizing     |     22.0000 | 3.00068650883995 |
 +-------------------+-------------+------------------+
-13 rows in set (0.86 sec)
+13 rows in set (0.99 sec)
 
 MySQL [cs41518_yzhou113_db]> notee
